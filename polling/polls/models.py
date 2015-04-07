@@ -18,6 +18,7 @@ class Question(models.Model):
     was_published_recently.boolean = True
     was_published_recently.admin_order_field = 'pub_date'
 
+
 class Choice(models.Model):
 
     question = models.ForeignKey(Question)

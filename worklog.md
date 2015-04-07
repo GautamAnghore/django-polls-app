@@ -170,4 +170,78 @@ LOG
 	+ Edit `polling/settings.py`
 	+ add `os.path.join(BASE_DIR,'templates')` in `DIRS` field in `TEMPLATES`
 
+##Writing Views and Config URLs
+
+ - __HttpResponse__
+   ```python
+   		from django.http import HttpResponse
+
+   		def index(request):
+   			return HttpResponse("Hello Someone")
+   ```
+
+ - First, add a view in `polls/views.py` using HttpResponse.
+ - `touch urls.py` in `polls/`
+ - polls/urls.py
+   ```python
+         from django.conf.urls import url
+         from . import views
+
+         urlpatterns = [
+             url(r'^$', views.index, name='index'),
+         ]
+   ```
+ - Add `url(r'^polls/', include('polls.urls')),` in urlpatterns in `polling/urls.py`
+   [Notice that regular expression `r'^polls/` ends with trailing / without $, the ending symbol. This is because url continues after polls/ and the remaining part of url will be matched from polls/urls.py]
+
+ - To pass additional arguements to views from the URL, we capture the values using regex.
+   ```python
+      # url : 34/ can be captured and question_id will be equal to 34
+      url(r'^(?P<question_id>[0-9]+)$', views.details, name='details')
+   ```
+   Using parentheses around a pattern “captures” the text matched by that pattern and sends it as an argument to the view function.`?P<question_id>` is the name that will be used to identify the matched pattern and `[0-9]+` is the regular expression to match the sequence of digits.
+
+   The view capturing this question_id will be
+   ```python
+         def details(request, question_id):
+            return HttpResponse("You are at %s" % question_id)
+   ```
  
+ - Modifying templates for polls app
+   ```
+      cd polls
+      mkdir templates
+      cd templates
+      mkdir polls
+      cd polls
+      touch index.html
+   ```
+   Note that the structure is
+   ```
+      polls/
+         |- templates/
+               |- polls/
+                     |- index.html
+   ```
+   It is important to put index.html inside the folder __polls__ in __templates__. It can be referred to as `polls/index.html`. No need to change anything in `DIRS` field in `TEMPLATES` variable in `polling/settings.py`.
+
+ - Methods :
+   + __Loader__ : `from django.template import loader`
+   + __RequestContext__ : `from django.template import RequestContext`
+ 
+ - To render and return template
+   + `loader.get_template` for loading the template
+   + `RequestContext` for creating context
+   + `render` to render the context
+   + variables to the templates are passed using RequestContext
+
+   ```python
+         def index(request):
+             latest_question_list = Question.objects.order_by('-pub_date')[:5]
+             template = loader.get_template('polls/index.html')
+             context = RequestContext(request, {
+                 'latest_question_list': latest_question_list,
+             })
+             return HttpResponse(template.render(context))
+   ```
+   
