@@ -49,18 +49,54 @@ LOG
 
    `python manage.py shell`
 
-   ```
-   >>>from polls.models import Question, Choice
-   >>>Question.objects.all()
-   >>>from django.utils import timezone
-   >>>q = Question(question_text="whats up?", pub_date=timezone.now())
-   >>>q.save() //to save q in database
-   >>>q.id
-   >>>q.question_text
-   >>>q.pub_date
-   >>>Question.objects.all()
+   ```python
+	   >>> from polls.models import Question, Choice
+	   >>> Question.objects.all()
+	   >>> from django.utils import timezone
+	   >>> q = Question(question_text="whats up?", pub_date=timezone.now())
+	   >>> q.save()  #to save q in database
+	   >>> q.id
+	   >>> q.question_text
+	   >>> q.pub_date
+	   >>> Question.objects.all()
+	   >>> q.was_published_recently()
+	   >>> Question.objects.filter(id=1)
+	   >>> Question.objects.get(pk=1) 	#pk=primary key
+	   >>> Question.objects.filter(question_text__startswith='What')	#predefined database api function
+	   >>> Question.objects.get(pub_date__year=timezone().now().year)
    ```
 
- - To display proper object representations like in `Question.objects.all()`, define __str__ function in python 3 and __unicode__ function in python 2.
+   Django creates a 'set' to hold the "other side" of a foreign key relation. Like in this case choices is a table which has a foreign key relation to questions. So django will have a set of all choices that belong to a particular question.
+
+   ```python
+   		>>> q = Question.objects.get(pk=1)
+   		>>> q.choice_set.create(choice_text='nothing much', votes=0)
+   		>>> q.choice_set.create(choice_text='lots of work', votes=0)
+   		>>> c = q.choice_set.create(choice_text='dont know', votes=0)
+   		>>> c.question 		# reverse relation
+   		>>> q.choice_set.all()
+   		>>> q.choice_set.count()
+   ```
+
+   Django's database API automatically follow the relationship to any depth as far as we need, no limit. Just need to use double underscores to saperate relationships.
+   
+   ```python
+   		>>> # Find all Choices for any question whose pub_date is in this year
+   		>>> Choice.objects.filter(question__pub_date__year=timezone.now().year)
+   ```
+
+   Delete any object-
+
+   ```python
+   		>>> c = q.choice_set.filter(choice_text__startswith='nothing')
+   		>>> c.delete()
+   ```
+
+   Documentation :
+   + [Accessing related objects](https://docs.djangoproject.com/en/1.8/ref/models/relations/)
+   + [Double underscore field lookups](https://docs.djangoproject.com/en/1.8/topics/db/queries/#field-lookups-intro)
+   + [Database API reference](https://docs.djangoproject.com/en/1.8/topics/db/queries/)
+   
+ - To display proper object representations like in `Question.objects.all()` or in django generated default admin panel, define __str__ function in python 3 and __unicode__ function in python 2.
 
  - 
