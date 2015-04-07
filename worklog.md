@@ -141,4 +141,33 @@ LOG
    		('Date Information', {'fields': ['pub_date'], 'classes': ['collapse']}),
    	```
 
-   	
+   To add choice model inline with questions.
+   ```python
+   		class ChoiceInLine(admin.TabularInline):
+   			model = Choice
+   			extra = 3
+
+   		# in class QuestionAdmin(admin.ModelAdmin):
+   		# add
+   		inlines = [ChoiceInline]
+   ```
+   To add searching facility, filter, and change the display of question :
+   ```python
+   		list_display = ('question_text', 'pub_date', 'was_published_recently')
+    	list_filter = ['pub_date']
+    	search_fields = ['question_text']
+   ```
+
+ - To modify the templates of admin panel like header or design,
+ 	+ `mkdir templates` [inside the project folder i.e. polling folder containing manage.py]
+ 	+ `cd templates`
+ 	+ `mkdir admin`
+ 	+ copy the templates from django's source code
+
+ 		`venv/lib/python2.7/site-packages/django/contrib/admin/templates/admin/base_site.html`
+ 		to `admin`
+	+ modify the templates
+	+ Edit `polling/settings.py`
+	+ add `os.path.join(BASE_DIR,'templates')` in `DIRS` field in `TEMPLATES`
+
+ 
