@@ -45,6 +45,22 @@ LOG
 
    `python manage.py migrate`
 
- - 
+ - To run the interactive shell with all the dependencies installed
+
+   `python manage.py shell`
+
+   ```
+   >>>from polls.models import Question, Choice
+   >>>Question.objects.all()
+   >>>from django.utils import timezone
+   >>>q = Question(question_text="whats up?", pub_date=timezone.now())
+   >>>q.save() //to save q in database
+   >>>q.id
+   >>>q.question_text
+   >>>q.pub_date
+   >>>Question.objects.all()
+   ```
+
+ - To display proper object representations like in `Question.objects.all()`, define __str__ function in python 3 and __unicode__ function in python 2.
 
  - 
