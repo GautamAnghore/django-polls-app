@@ -1,6 +1,8 @@
 LOG
 ===
 
+## Project Initialisations and Database Model+API
+
  - `django-admin startproject polls`
  
  - **settings :** database setting (engine : django.db.backends.mysql, name : dbname, host : localhost, user, password, port : 3306), `TIMEZONE : 'Asia/Kolkata'`
@@ -96,7 +98,47 @@ LOG
    + [Accessing related objects](https://docs.djangoproject.com/en/1.8/ref/models/relations/)
    + [Double underscore field lookups](https://docs.djangoproject.com/en/1.8/topics/db/queries/#field-lookups-intro)
    + [Database API reference](https://docs.djangoproject.com/en/1.8/topics/db/queries/)
-   
+
  - To display proper object representations like in `Question.objects.all()` or in django generated default admin panel, define __str__ function in python 3 and __unicode__ function in python 2.
 
- - 
+
+##Django Site Admin's Panel
+
+ - `python manage.py createsuperuser`
+
+ - Run server and login.
+
+ - To add questions from poll, edit `polls/admin.py`
+ 	```python
+		from .models import Question
+		admin.site.register(Question)
+   ```
+
+   To define the order of fields,
+   ```python
+		from .models import Question
+		class QuestionAdmin(admin.ModelAdmin):
+		    fields = ['pub_date', 'question_text']
+
+		admin.site.register(Question, QuestionAdmin)
+   ```
+
+   To divide into fieldsets,
+   ```python
+   		from .models import Question
+   		class QuestionAdmin(admin.ModelAdmin):
+   			fieldsets = [
+   			(None, {'fields': ['question_text']}),
+   			('Date Information', {'fields': ['pub_date']}),
+   		]
+
+   		admin.site.register(Question, QuestionAdmin)
+   ```
+
+   To add collapse class to field so that initially it is shown hidden.
+   ```python
+   		#...
+   		('Date Information', {'fields': ['pub_date'], 'classes': ['collapse']}),
+   	```
+
+   	
