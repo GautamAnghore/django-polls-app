@@ -226,13 +226,20 @@ LOG
    It is important to put index.html inside the folder __polls__ in __templates__. It can be referred to as `polls/index.html`. No need to change anything in `DIRS` field in `TEMPLATES` variable in `polling/settings.py`.
 
  - Methods :
-   + __Loader__ : `from django.template import loader`
-   + __RequestContext__ : `from django.template import RequestContext`
- 
+   
+   |      Function           |                Import                                     |
+   |-------------------------|-----------------------------------------------------------|
+   | __Loader__              | `from django.template import loader`                      |
+   | __RequestContext__      | `from django.template import RequestContext`              |
+   | __Render__              | `from django.shortcuts import render`                     |
+   | __Http404__             | `from django.http import Http404`                         |
+   | __get_object_or_404()__ | `from django.shortcuts import get_object_or_404`          |
+   
+
  - To render and return template
    + `loader.get_template` for loading the template
    + `RequestContext` for creating context
-   + `render` to render the context
+   + `render` is the shortcut for these two steps which can be used
    + variables to the templates are passed using RequestContext
 
    ```python
@@ -244,4 +251,31 @@ LOG
              })
              return HttpResponse(template.render(context))
    ```
+ 
+ - Shortcut to render template
    
+   ```python
+      # def index(request) ....
+      context = {'latest_question_list': latest_question_list}
+      return render(request, 'polls/index.html', context)
+   ```
+ 
+ - Raising 404
+   + 
+     
+     ```python
+         # def details(request, question_id) ...
+         try:
+              question = Question.objects.get(pk=question_id)
+         except Question.DoesNotExist:
+              raise Http404("Question does not exist")
+     ```
+   + **get_object_or_404()** [similar function `get_list_or_404()`]
+     
+     ```python
+         # def details(request, question_id) ...
+         question = get_object_or_404(Question, pk=question_id)
+         return render(request, 'polls/detail.html', {'question': question})
+     ```
+
+ - 
