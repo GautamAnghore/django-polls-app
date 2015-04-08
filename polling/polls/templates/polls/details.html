@@ -1,8 +1,14 @@
 <h1>{{ question.question_text }}</h1>
 
+{% if error_message %}<p><h3>{{ error_message }}</h3></p>{% endif %}
 
-<form>
+<form method="post" action="{% url 'polls:vote' question.id %}">
+{% csrf_token %}
+
 {% for choice in question.choice_set.all %}
-	<input type="radio" name="choice" value="{{ choice.choice_text }}" />{{ choice.choice_text }}<br/>
+	<input type="radio" name="choice" id="choice{{ forloop.counter}}" value="{{ choice.id }}" />
+
+	<label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br/>
 {% endfor %}
+<input type="submit" value="Vote"/>
 </form>

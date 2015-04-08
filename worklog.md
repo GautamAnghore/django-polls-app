@@ -304,3 +304,25 @@ LOG
    ```python
    url(r'^polls/', include('polls.urls', namespace="polls")),
    ```
+ - You should always return an HttpResponseRedirect after successfully dealing with POST data.
+
+##Templating
+
+ - For loop
+   
+   ```
+      {% for choice in question.choice_set.all %}
+          <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}" />
+          <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br />
+      {% endfor %}
+   ```
+
+ - Form
+
+   ```
+      <form action="{% url 'polls:vote' question.id %}" method="post">
+         {% csrf_token %}
+            ....
+         <input type="submit" value="Vote" />
+      </form>
+   ```
