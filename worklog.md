@@ -278,4 +278,29 @@ LOG
          return render(request, 'polls/detail.html', {'question': question})
      ```
 
- - 
+ - Removing Hardcoded urls
+
+   ```html
+      <li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li>
+   ```
+   'detail' is the name given in `polls/urls.py` to the url defination/pattern.
+
+   ```python
+      url(r'^specifics/(?P<question_id>[0-9]+)/$', views.detail, name='detail'),
+   ```
+
+   'question.id' will come from the question object passed while rendering the template.
+
+ - Using NameSpace
+
+   When there are multiple apps and they all have detail view function, namespace is used to identify correct url.
+
+   ```html
+   <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
+   ```
+
+   For this, edit `polling/urls.py` and add namespace
+
+   ```python
+   url(r'^polls/', include('polls.urls', namespace="polls")),
+   ```
